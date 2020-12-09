@@ -7,11 +7,17 @@
 
 namespace passport_processing {
     using passport = std::map<std::string, std::string>;
-    using valid_password_predicate = std::function<bool(const passport&)>;
-    bool passport_has_required_fields(const passport& p);
-    bool passport_has_valid_data(const passport& p);
+    using require_fields_predicate = std::function<bool(const passport&)>;
+    using valid_field_predicate = std::function<bool(const std::string&)>;
+    using keyed_validation_predicates = std::vector<std::pair<std::string, valid_field_predicate>>;
 
+    std::vector<std::string> split(const std::string& str, const char& delimiter);
     std::vector<passport> read_passport_file(const std::string& filename);
-    std::vector<std::string> split(const std::string& str, const char& delim);
-    int count_valid_passports(const std::vector<passport>& passports, const valid_password_predicate& predicate);
+
+    bool passport_has_required_fields(const passport& p);
+    keyed_validation_predicates validators();
+
+    int count_valid_passports(const std::vector<passport>& passports,
+                              const require_fields_predicate& required_fields_predicate,
+                              const keyed_validation_predicates& validations = {});
 }
