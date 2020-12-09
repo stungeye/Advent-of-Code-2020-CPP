@@ -36,3 +36,8 @@ TEST_CASE("PART 1") {
     std::vector<passport> passports{read_passport_file(filename)};
     REQUIRE(count_valid_passports(passports, passport_has_required_fields) == 239);
 }
+
+TEST_CASE("PART 2") {
+    std::vector<passport> passports{read_passport_file(filename)};
+    REQUIRE(count_valid_passports(passports, passport_has_valid_data) == 188);
+}

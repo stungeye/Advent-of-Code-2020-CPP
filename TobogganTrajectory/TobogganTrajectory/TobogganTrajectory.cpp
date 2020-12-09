@@ -30,7 +30,7 @@ namespace toboggan_trajectory {
 
     long long product_of_tree_encounters(const std::vector<std::string>& tree_map, const std::vector<trajectory>& trajectories) {
         return std::reduce(trajectories.cbegin(), trajectories.cend(), 1LL,
-                               [tree_map](const long long& total, const trajectory& delta) {
+                               [&tree_map](const long long& total, const trajectory& delta) {
                                    return total * count_tree_encounters(tree_map, delta);
                                });
     }
