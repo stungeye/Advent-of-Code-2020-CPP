@@ -101,7 +101,7 @@ namespace passport_processing {
     }
 
     int count_valid_passports(const std::vector<passport>& passports,
-                              const require_fields_predicate& required_fields_predicate,
+                              const required_fields_predicate& required_fields_predicate,
                               const keyed_validation_predicates& validations) {
         return std::count_if(passports.cbegin(), passports.cend(), [&](const auto& p) -> bool {
             if (!required_fields_predicate(p)) return false;
