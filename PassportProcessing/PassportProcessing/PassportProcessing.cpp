@@ -14,7 +14,7 @@ namespace passport_processing {
         while (std::getline(iss, s, delimiter)) {
             splits.emplace_back(s);
         }
-
+        
         return splits;
     }
 
@@ -46,7 +46,6 @@ namespace passport_processing {
 
         return passports;
     }
-
 
     bool passport_has_required_fields(const passport& p) {
         const std::vector<std::string> required_fields = {"hcl", "iyr", "eyr", "ecl", "pid", "byr", "hgt"};
