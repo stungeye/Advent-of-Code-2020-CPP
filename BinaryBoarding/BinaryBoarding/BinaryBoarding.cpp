@@ -10,53 +10,36 @@ namespace binary_boarding {
         return std::vector<std::string>{
             std::istream_iterator<std::string>{input_file}, {}
         };
-
     }
 
-    int find_bsp_position(const std::string& code, const int& max_position, const char& forward) {
-        auto lower_bound = 0;
-        auto upper_bound = max_position;
+    int boarding_id(const std::string& code) {
+        std::string binary_string(code.length(), '0'); 
+        std::transform(code.cbegin(), code.cend(), binary_string.begin(),
+            [](auto c) { return (c == 'B' || c == 'R') ? '1' : '0'; });
 
-        for (auto forward_or_back : code) {
-            const auto half = (upper_bound + 1 - lower_bound) / 2;
-            if (forward_or_back == forward) {
-                upper_bound -= half;
-            }
-            else {
-                lower_bound += half;
-            }
-        }
-
-        return lower_bound;
+        return std::stoi(binary_string, nullptr, 2);
     }
 
-    int boarding_id(const std::string& code, const int& max_rows, const int& max_columns) {
-        const auto row_code = code.substr(0, 7);
-        const auto column_code = code.substr(7);
-        return max_columns * find_bsp_position(row_code, max_rows, 'F')
-            + find_bsp_position(column_code, max_columns, 'L');
-    }
-
-    std::vector<int> all_boarding_ids(const std::vector<std::string>& codes, const int& max_rows,
-                                      const int& max_columns) {
+    std::vector<int> all_boarding_ids(const std::vector<std::string>& codes) {
         std::vector<int> boarding_ids;
         std::transform(codes.begin(), codes.end(), std::back_inserter(boarding_ids),
-                       [max_rows, max_columns](auto code) -> int { return boarding_id(code, max_rows, max_columns); });
+                       [](auto code) -> int { return boarding_id(code); });
+
         return boarding_ids;
     }
 
-    int max_boarding_id(const std::vector<std::string>& codes, const int& max_rows, const int& max_columns) {
-        const auto boarding_ids = all_boarding_ids(codes, max_rows, max_columns);
+    int max_boarding_id(const std::vector<std::string>& codes) {
+        const auto boarding_ids = all_boarding_ids(codes);
         return *std::max_element(boarding_ids.begin(), boarding_ids.end());
     }
 
-    int first_empty_seat(const std::vector<std::string>& codes, const int& max_rows, const int& max_columns) {
-        auto boarding_ids = all_boarding_ids(codes, max_rows, max_columns);
+    int first_empty_seat(const std::vector<std::string>& codes) {
+        auto boarding_ids = all_boarding_ids(codes);
         std::sort(boarding_ids.begin(), boarding_ids.end(), std::less<>());
 
+        // Error if nothing is found because we'll still try to dereference boarding_ids.end().
         return *std::adjacent_find(boarding_ids.begin(), boarding_ids.end(), [](int a, int b) {
             return a + 1 != b;
         }) + 1;
     }
-
 }
